@@ -65,13 +65,17 @@ jobs:
         run: |
           cd build86 && make dobby
           
+      - name: Collect artifacts
+        run: |
+          mkdir build_result
+          cp build64/libdobby.so build_result/libdobby_x64.so
+          cp build86/libdobby.so build_result/libdobby_x86.so
+          
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
         with:
           name: Linux
-          path: |
-            build64/*.so
-            build86/*.so
+          path: build_result
 
           
   

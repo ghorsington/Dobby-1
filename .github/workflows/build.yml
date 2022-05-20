@@ -102,4 +102,33 @@ jobs:
         with:
           name: macOS
           path: build_result
+
+  collect:
+    runs-on: ubuntu-latest
+    name: Collect build
+    if: github.ref == 'refs/heads/master'
+    needs: [win-build, linux-build, macos-build]
+    
+    steps:
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v3.0.0
+
+      - name: ZIP versions
+        run: |
+          zip -r dobby-win.zip Windows/*.dll
+          zip -r dobby-linux.zip Linux/*.so
+          zip -r dobby-macos.zip macOS/*.dylib
       
+      - name: Automatic Releases
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "CI"
+          files: |
+            dobby-win.zip
+            dobby-linux.zip
+            dobby-macos.zip
+            
+    

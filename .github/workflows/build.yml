@@ -77,5 +77,29 @@ jobs:
           name: Linux
           path: build_result
 
+  macos-build:
+    runs-on: macos-latest
+    name: macOS Build
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure CMake
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=Release -DDynamicBinaryInstrument=OFF -DPlugin.SymbolResolver=OFF -B build64
           
-  
+      - name: Build x64
+        run: |
+          cd build64 && make dobby
+          
+      - name: Collect artifacts
+        run: |
+          mkdir build_result
+          cp build64/libdobby.dylib build_result/libdobby_x64.dylib
+          
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: macOS
+          path: build_result
+      

@@ -46,6 +46,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install gcc-multilib g++-multilib libc6-dev-i386
 
       - name: Configure CMake
         run: |

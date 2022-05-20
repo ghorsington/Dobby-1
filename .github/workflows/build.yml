@@ -115,9 +115,9 @@ jobs:
 
       - name: ZIP versions
         run: |
-          zip -r dobby-win.zip Windows/*.dll
-          zip -r dobby-linux.zip Linux/*.so
-          zip -r dobby-macos.zip macOS/*.dylib
+          zip -r -j dobby-win.zip Windows/*.dll
+          zip -r -j dobby-linux.zip Linux/*.so
+          zip -r -j dobby-macos.zip macOS/*.dylib
       
       - name: Automatic Releases
         uses: marvinpinto/action-automatic-releases@latest

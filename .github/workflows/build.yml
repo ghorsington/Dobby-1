@@ -6,7 +6,7 @@ jobs:
   win-build:
     runs-on: windows-latest
     name: Windows Build
-    
+
     steps:
       - uses: actions/checkout@v3
 
@@ -39,3 +39,34 @@ jobs:
         with:
           name: Windows
           path: build_result
+
+  linux-build:
+    runs-on: ubuntu-latest
+    name: Linux Build
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure CMake
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=Release -DDynamicBinaryInstrument=OFF -DPlugin.SymbolResolver=OFF -B build64
+          cmake -DCMAKE_CXX_FLAGS="-m32" -DCMAKE_C_FLAGS="-m32" -DCMAKE_SHARED_LINKER_FLAGS="-m32" -DCMAKE_BUILD_TYPE=Release -DDynamicBinaryInstrument=OFF -DPlugin.SymbolResolver=OFF -B build86
+          
+      - name: Build x64
+        run: |
+          cd build64 && make dobby
+          
+      - name: Build x86
+        run: |
+          cd build86 && make dobby
+          
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: Linux
+          path: |
+            build64/*.so
+            build86/*.so
+
+          
+  

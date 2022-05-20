@@ -9,30 +9,28 @@ jobs:
     
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: setup-msbuild
         uses: microsoft/setup-msbuild@v1.1
-      
+
       - name: Configure CMake
-        run: |
-          cmake --version
-          cmake -DCMAKE_BUILD_TYPE=Release -DDynamicBinaryInstrument=OFF -DPlugin.SymbolResolver=OFF -A x64 -B "build64"
-          cmake -DCMAKE_BUILD_TYPE=Release -DDynamicBinaryInstrument=OFF -DPlugin.SymbolResolver=OFF -A Win32 -B "build32"
-      
+        run: cmake -DCMAKE_BUILD_TYPE=Release -DDynamicBinaryInstrument=OFF -DPlugin.SymbolResolver=OFF -A x64 -B build64
+#          cmake -DCMAKE_BUILD_TYPE=Release -DDynamicBinaryInstrument=OFF -DPlugin.SymbolResolver=OFF -A Win32 -B build32
+
       - name: Build x86
         run: |
           msbuild -m -p:Configuration=Release -t:dobby build32/Dobby.sln
-          
+
       - name: Build x86
         run: |
           msbuild -m -p:Configuration=Release -t:dobby build32/Dobby.sln
-          
+
       - name: Collect artifacts
         run: |
           mkdir build_result
           copy "build32\Release\dobby.dll" "build_result\dobby_x86.dll"
           copy "build64\Release\dobby.dll" "build_result\dobby_x64.dll"
-          
+
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
         with:
